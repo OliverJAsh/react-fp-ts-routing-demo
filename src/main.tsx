@@ -1,48 +1,46 @@
 import * as P from "fp-ts-routing";
 import { pipe } from "fp-ts/function";
 import * as O from "fp-ts/Option";
-import * as History from "history";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import * as ReactRouterDOM from "react-router-dom";
+import { Link } from "./Link";
+import * as ReactHistory from "./ReactHistory";
 import * as Route from "./Route";
 import * as Router from "./Router";
 import * as RouteUnion from "./RouteUnion";
+import * as URL from "./URL";
+import { useURL } from "./useURL";
+
+const useRoute = () => {
+    const url = useURL();
+    const path = URL.toPath(url);
+    const routeOption = Router.parseRoute(path);
+    return routeOption;
+};
 
 const Nav: React.FC = () => (
     <nav>
         <ul>
             <li>
-                <ReactRouterDOM.Link
-                    to={P.format(Router.homeMatch.formatter, {})}
-                >
+                <Link href={P.format(Router.homeMatch.formatter, {})}>
                     Home
-                </ReactRouterDOM.Link>
+                </Link>
             </li>
             <li>
-                <ReactRouterDOM.Link
-                    to={P.format(Router.searchMatch.formatter, {
+                <Link
+                    href={P.format(Router.searchMatch.formatter, {
                         query: "dogs and cats",
                     })}
                 >
                     Search
-                </ReactRouterDOM.Link>
+                </Link>
             </li>
             <li>
-                <ReactRouterDOM.Link to="/abcdef">
-                    Invalid link (to test "not found")
-                </ReactRouterDOM.Link>
+                <Link href="/abcdef">Invalid link (to test "not found")</Link>
             </li>
         </ul>
     </nav>
 );
-
-const useRoute = () => {
-    const { pathname, search } = ReactRouterDOM.useLocation();
-    const path = History.createPath({ pathname, search });
-    const routeOption = Router.parseRoute(path);
-    return routeOption;
-};
 
 const Home: React.FC<Route.Home> = () => (
     <div>
@@ -89,8 +87,8 @@ const App = () => {
 };
 
 ReactDOM.render(
-    <ReactRouterDOM.BrowserRouter>
+    <ReactHistory.Provider>
         <App />
-    </ReactRouterDOM.BrowserRouter>,
+    </ReactHistory.Provider>,
     document.querySelector("#root")
 );
