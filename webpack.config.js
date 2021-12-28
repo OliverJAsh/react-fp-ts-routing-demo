@@ -13,6 +13,10 @@ module.exports = {
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
+        fallback: {
+            querystring: require.resolve("querystring-es3"),
+            url: require.resolve("url/"),
+        },
     },
     plugins: [
         new CopyPlugin({
